@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字アニメーション</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #000;  /* デフォルト背景色 */
+            background-size: auto 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .text-container {
+            display: inline-flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .char {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            opacity: 0;
+            transform: translateY(100px);
+            animation: fly-in 1s forwards;
+        }
+
+        @keyframes fly-in {
+            0% {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="text-container" id="text"></div>
+
+<script>
+    function getTextFromURL() {
+        const urlParams = new URLSearchParams(window.location.hash.slice(1));
+        const text = urlParams.get('text');
+        const bgColor = urlParams.get('bg');  // 新しくbgパラメータを追加
+        if (text === '???') {
+            window.location.href = 'translate.html';
+            return '';
+        }
+        if (bgColor) {
+            // RGB値が指定されている場合、背景色に適用
+            document.body.style.backgroundColor = bgColor;
+        }
+        if (text) {
+            try {
+                return atob(text);
+            } catch (e) {
+                console.error('Invalid Base64 encoding:', e);
+                return '';
+            }
+        }
+        return '';
+    }
+
+    const text = getTextFromURL(); // URL からデコードした文字列を取得
+    const container = document.getElementById('text');
+
+    if (text) {
+        text.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.className = 'char';
+            span.style.animationDelay = `${index * 0.1}s`;
+            container.appendChild(span);
+        });
+    } else if (!window.location.href.includes('translate.html')) {
+        container.textContent = 'No text provided.';
+    }
+</script>
+
+</body>
+</html>
