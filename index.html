@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64変換ツール</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Base64変換ツール</h1>
+    <textarea id="inputText" placeholder="ここにテキストを入力してください"></textarea>
+    <br>
+    <button onclick="encodeBase64()">エンコード</button>
+    <button onclick="decodeBase64()">デコード</button>
+    <br>
+    <h3>結果:</h3>
+    <textarea id="resultText" readonly></textarea>
+
+    <script>
+        // Base64エンコード関数
+        function encodeBase64() {
+            const input = document.getElementById('inputText').value;
+            try {
+                const encoded = btoa(input);
+                document.getElementById('resultText').value = encoded;
+            } catch (e) {
+                alert("無効な文字が含まれています。エンコードできません。");
+            }
+        }
+
+        // Base64デコード関数
+        function decodeBase64() {
+            const input = document.getElementById('inputText').value;
+            try {
+                const decoded = atob(input);
+                document.getElementById('resultText').value = decoded;
+            } catch (e) {
+                alert("無効なBase64文字列です。デコードできません。");
+            }
+        }
+    </script>
+</body>
+</html>
