@@ -12,15 +12,34 @@
             height: 100vh;
             margin: 0;
             background: #000;  /* デフォルト背景色 */
-            background-size: auto 100vh;
-            overflow: hidden;
             font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            position: relative;
+            display: inline-block;
+        }
+
+        #image-container {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+        }
+
+        #image-container img {
+            width: 100%;
+            height: auto;
         }
 
         .text-container {
-            display: inline-flex;
-            overflow: hidden;
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
         }
 
         .char {
@@ -47,23 +66,15 @@
             }
         }
 
-        #image-container {
-            max-width: 90%;
-            max-height: 80vh;
-            display: none;
-        }
-
-        #image-container img {
-            width: 100%;
-            height: auto;
-        }
     </style>
 </head>
 <body>
 
-<div class="text-container" id="text"></div>
-<div id="image-container">
-    <img id="image" src="" alt="Image">
+<div class="container" id="container">
+    <div id="image-container">
+        <img id="image" src="" alt="Image">
+    </div>
+    <div class="text-container" id="text"></div>
 </div>
 
 <script>
@@ -71,6 +82,8 @@
         const urlParams = new URLSearchParams(window.location.hash.slice(1));
         const text = urlParams.get('text');
         const bgColor = urlParams.get('bg');  // 背景色の取得
+        const imageFile = urlParams.get('image');  // 画像ファイル名の取得
+
         if (text === '???') {
             window.location.href = 'translate.html';
             return '';
@@ -80,17 +93,15 @@
             document.body.style.backgroundColor = bgColor;  // 背景色の適用
         }
 
+        if (imageFile) {
+            const imageContainer = document.getElementById('image-container');
+            const imageElement = document.getElementById('image');
+            imageElement.src = imageFile;  // 指定された画像をセット
+            imageContainer.style.display = 'block';  // 画像コンテナを表示
+        }
+
         if (text) {
-            // 画像ファイルの処理
-            if (text.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                const imageContainer = document.getElementById('image-container');
-                const imageElement = document.getElementById('image');
-                imageElement.src = text;  // 指定された画像をセット
-                imageContainer.style.display = 'block';  // 画像コンテナを表示
-                return '';
-            }
-            
-            // テキストとして表示する場合
+            // 文字として表示する場合
             return atob(text); // Base64エンコードされた文字列をデコード
         }
         return '';
