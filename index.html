@@ -46,32 +46,52 @@
                 transform: translateY(0);
             }
         }
+
+        #image-container {
+            max-width: 90%;
+            max-height: 80vh;
+            display: none;
+        }
+
+        #image-container img {
+            width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
 
 <div class="text-container" id="text"></div>
+<div id="image-container">
+    <img id="image" src="" alt="Image">
+</div>
 
 <script>
     function getTextFromURL() {
         const urlParams = new URLSearchParams(window.location.hash.slice(1));
         const text = urlParams.get('text');
-        const bgColor = urlParams.get('bg');  // 新しくbgパラメータを追加
+        const bgColor = urlParams.get('bg');  // 背景色の取得
         if (text === '???') {
             window.location.href = 'translate.html';
             return '';
         }
+
         if (bgColor) {
-            // RGB値が指定されている場合、背景色に適用
-            document.body.style.backgroundColor = bgColor;
+            document.body.style.backgroundColor = bgColor;  // 背景色の適用
         }
+
         if (text) {
-            try {
-                return atob(text);
-            } catch (e) {
-                console.error('Invalid Base64 encoding:', e);
+            // 画像ファイルの処理
+            if (text.match(/\.(jpg|jpeg|png|gif)$/i)) {
+                const imageContainer = document.getElementById('image-container');
+                const imageElement = document.getElementById('image');
+                imageElement.src = text;  // 指定された画像をセット
+                imageContainer.style.display = 'block';  // 画像コンテナを表示
                 return '';
             }
+            
+            // テキストとして表示する場合
+            return atob(text); // Base64エンコードされた文字列をデコード
         }
         return '';
     }
