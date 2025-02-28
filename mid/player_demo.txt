@@ -1,0 +1,142 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class player : MonoBehaviour
+{
+    public bool A;
+    public float time_setting;
+    public float D;
+    public float Ma;
+    public float item;
+    public float G;
+    public int time;
+    public int point;
+    public int otita;
+    public int speed;
+    public int kazu;
+    /// int ＝イント
+    public Text timetext;
+    public Rigidbody B;
+    public Transform C;
+    public GameObject F;
+    public GameObject o;
+    public Transform H;
+    public Vector3 save_point;
+    public Vector3 save_point_first;
+    public MeshRenderer material_public;
+    // Start is called before the first frame update
+    void Start()
+    {
+        save_point_first = collision.transform.position;
+        save_point = save_point_first;
+        transform.position = save_point; 
+        A = true;
+        D = 1;
+        item = 1;
+        G = 1;
+        Physics.gravity = new Vector3(0f-9.81f, 0f);
+        point = PlayerPrefs.GetInt("po", 0);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (Time.fixedTime - time_setting > 1f) { Instantiate(o, new Vector3(51f, 4f, 50f), Quaternion.Euler(0f, 0f, 0f)); time = Time.fixedTime; }
+        if (Ma == 1)
+        {
+            float sin = Mathf.Sin(Time.time);
+            float cos = Mathf.Cos(Time.time);
+            this.transform.position = new Vector3(sin * 3, 3.5f, cos * 3 + 65);
+            ///sin*3+42, 3.5f, cos*3+65  is really
+        }
+        if (Ma == 2)
+        {
+            kazu+=1;
+            float sin = Mathf.Sin(kazu);
+            float cos = Mathf.Cos(kazu);
+            this.transform.position = new Vector3(sin * 3, 3.5f, cos * 3 + 65);
+            ///sin*3+42, 3.5f, cos*3+65  is really
+        }
+
+        if (Time.fixedTime - time > 1) { time += 1; }
+        timetext.text = time.ToString() + "秒";
+        PlayerPrefs.SetInt("co", point);
+        if (point > time) { point = time; }
+
+        if (D == 1) {
+            if (Input.GetKey(KeyCode.A)) { transform.Translate(-0.025f, 0f, 0f); }
+            if (Input.GetKey(KeyCode.D)) { transform.Translate(0.025f, 0f, 0f); }
+            if (Input.GetKey(KeyCode.W)) { transform.Translate(0f, 0f, 0.025f); }
+            if (Input.GetKey(KeyCode.S)) { transform.Translate(0f, 0f, -0.025f); }
+        }
+        if (D == 2)
+        {
+            if (Input.GetKey(KeyCode.A)) { transform.Translate(-0.01f, 0f, 0f); }
+            if (Input.GetKey(KeyCode.D)) { transform.Translate(0.01f, 0f, 0f); }
+            if (Input.GetKey(KeyCode.W)) { transform.Translate(0f, 0f, 0.01f); }
+            if (Input.GetKey(KeyCode.S)) { transform.Translate(0f, 0f, -0.01f); }
+        }
+
+        if (D == 3)
+        {
+            if (Input.GetKey(KeyCode.A)) { transform.Translate(-speed, 0f, 0f); }
+            if (Input.GetKey(KeyCode.D)) { transform.Translate(speed 0f, 0f); }
+            if (Input.GetKey(KeyCode.W)) { transform.Translate(0f, 0f, speed); }
+            if (Input.GetKey(KeyCode.S)) { transform.Translate(0f, 0f, -speed); }
+        }
+        if (transform.position.y < -5) { transform.position = new Vector3(47f, 5f, 17f); }
+        if (Input.GetKey(KeyCode.RightArrow)) { transform.Rotate(0f, 1f, 0f); }
+        if (Input.GetKey(KeyCode.I)||(KeyCode.RightShfit)) { speed+=1; }
+        if (Input.GetKey(KeyCode.J)||(KeyCode.RightShfit)) { speed-=1; }
+        if (Input.GetKey(KeyCode.LeftArrow)) { transform.Rotate(0f, -1f, 0f); }
+        if (Input.GetKeyDown(KeyCode.Alpha1)) { transform.position = new Vector3(0f, 0f, 0f); }
+        if (Input.GetKeyDown(KeyCode.R)) { transform.position = new Vector3(47f, 5f, 17f); }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) { transform.position = new Vector3(42f, 5f, 60f); }
+        if (Input.GetKeyDown(KeyCode.Space) && A == true) { B.AddForce(transform.forward * 300 + transform.up * 500); A = false; }
+        if (Input.GetKeyDown(KeyCode.B) && G == 2) { Instantiate(F, new Vector3(51f, 4f, 50f), Quaternion.Euler(0f, 0f, 0f)); }
+        if (transform.position.y < -2) { transform.position = save_point; }
+        if (transform.position.y < -2) { otita = 1; }
+        if (otita == 0)
+        {
+            if (Input.GetKey(KeyCode.Alpha1)) { material_public.material.color = Color.red; }
+            if (Input.GetKey(KeyCode.Alpha2)) { material_public.material.color = Color.blue; }
+            if (Input.GetKey(KeyCode.Alpha3)) { material_public.material.color = Color.white; }
+            if (Input.GetKey(KeyCode.Alpha4)) { material_public.material.color = Color.green; }
+            if (Input.GetKey(KeyCode.Alpha5)) { material_public.material.color = Color.gray; }
+            if (Input.GetKey(KeyCode.Alpha6)) { material_public.material.color = Color.yellow; }
+            if (Input.GetKey(KeyCode.Alpha7)) { material_public.material.color = Color.cyan; }
+        }
+        if (otita == 1)
+        {
+            if (Input.GetKey(KeyCode.Alpha1)) { material_public.material.color = Color.black; }
+        }
+
+        }
+        void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.name == "yuka" || collision.gameObject.name == "yuka1" || collision.gameObject.name == "yuka2" || collision.gameObject.name == "jama") { A = true; }
+            if (collision.gameObject.name == "yuka" || collision.gameObject.name == "yuka1" || collision.gameObject.name == "yuka2" || collision.gameObject.name == "jama") { D = 1; }
+            if (collision.gameObject.name == "yukya") { D = 2; }
+            if (collision.gameObject.name == "zimen") { D = 3; }
+            if (collision.gameObject.name == "maguma" && item == 2) { transform.position = new Vector3(45f, 5f, 17f); }
+            if (collision.gameObject.name == "maguma" && item == 1) { transform.position = new Vector3(42.5f, 5f, 17f); }
+            if (colision .gameobject.name == "maguma"){transform.position = save_point; }
+            if (collision.gameObject.name == "yane" || collision.gameObject.name == "bakudann") { Physics.gravity = new Vector3(0f, -9.81f, 0f); }
+            if (collision.gameObject.name == "bakudann") { Physics.gravity = new Vector3(0f, -9.81f, 0f); }
+            if (collision.gameObject.name == "Y") { Physics.gravity = new Vector3(0f, 9.81f, 0f); }
+            if (collision.gameObject.name == "bakudann(clone)") { Physics.gravity = new Vector3(0f, -9.81f, 0f); }
+            if (collision.gameObject.name == "item") { item = 2; }
+            if (collision.gameObject.name == "bakudann(clone)" && Input.GetKeyDown(KeyCode.Space) && item == 2) { G = 2; }
+            if (collision.gameObject.name == "cabe" && item == 2) { Destroy(collision.gameObject); }
+            if (collision.gameObject.name == "save_point") { save_point = collision.transform.position; }
+
+        }
+        void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.name == "yuka" || collision.gameObject.name == "yuka1" || collision.gameObject.name == "yuka2") { A = false; }
+
+
+
+        }
+    }
